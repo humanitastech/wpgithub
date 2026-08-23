@@ -4,7 +4,7 @@ Tags: github, repositories, portfolio, projects, shortcode
 Requires at least: 6.5
 Requires PHP: 7.4
 Tested up to: 7.1
-Stable tag: 0.2.0
+Stable tag: 1.0.0
 License: GPLv2 or later
 
 Exibe repositórios públicos do GitHub em cartões responsivos com cache e curadoria opcional.
@@ -28,3 +28,6 @@ Este plugin consulta exclusivamente o serviço externo HTTPS definido pelo ambie
 
 = 0.2.0 =
 * Reescrita com configuração externa obrigatória, falha fechada, token fora do banco, requisições seguras, validação positiva e saída sem estilo incorporado.
+
+= 1.0.0 =
+* Primeira versão estável do MVP seguro, com documentação operacional e alinhamento às orientações aplicáveis do ENS.
