@@ -90,6 +90,15 @@ final class HTGP_Plugin {
             return get_option('htgp_settings', array());
         }
         $validated = array(
+            'api_base_url'       => esc_url_raw($input['api_base_url'] ?? ''),
+            'api_version'        => sanitize_text_field($input['api_version'] ?? ''),
+            'timeout_seconds'    => absint($input['timeout_seconds'] ?? 0),
+            'response_size'      => absint($input['response_size'] ?? 0),
+            'cache_ttl_seconds'  => absint($input['cache_ttl_seconds'] ?? 0),
+            'api_page_size'      => absint($input['api_page_size'] ?? 0),
+            'max_owner_length'   => absint($input['max_owner_length'] ?? 0),
+            'max_include_length' => absint($input['max_include_length'] ?? 0),
+            'max_repo_length'    => absint($input['max_repo_length'] ?? 0),
             'owner'            => sanitize_text_field($input['owner'] ?? ''),
             'limit'            => absint($input['limit'] ?? 0),
             'sort'             => sanitize_key($input['sort'] ?? ''),
@@ -98,7 +107,15 @@ final class HTGP_Plugin {
             'include_forks'    => !empty($input['include_forks']),
             'include_archived' => !empty($input['include_archived']),
         );
-        if ($validated['limit'] < 1 || $validated['limit'] > $this->configuration->get('api_page_size') || !in_array($validated['sort'], array('created', 'updated', 'pushed', 'full_name'), true) || !in_array($validated['direction'], array('asc', 'desc'), true) || !in_array($validated['type'], array('all', 'owner', 'member'), true)) {
+        $endpoint = wp_parse_url($validated['api_base_url']);
+        $integer_keys = array('timeout_seconds', 'response_size', 'cache_ttl_seconds', 'api_page_size', 'max_owner_length', 'max_include_length', 'max_repo_length');
+        $invalid_integer = false;
+        foreach ($integer_keys as $integer_key) {
+            if ($validated[$integer_key] < 1) {
+                $invalid_integer = true;
+            }
+        }
+        if (!is_array($endpoint) || ($endpoint['scheme'] ?? '') !== 'https' || empty($endpoint['host']) || isset($endpoint['user']) || isset($endpoint['pass']) || !wp_http_validate_url($validated['api_base_url']) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $validated['api_version']) || $invalid_integer || $validated['owner'] === '' || strlen($validated['owner']) > $validated['max_owner_length'] || !preg_match('/^[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?$/', $validated['owner']) || $validated['limit'] < 1 || $validated['limit'] > $validated['api_page_size'] || !in_array($validated['sort'], array('created', 'updated', 'pushed', 'full_name'), true) || !in_array($validated['direction'], array('asc', 'desc'), true) || !in_array($validated['type'], array('all', 'owner', 'member'), true)) {
             add_settings_error('htgp_settings', 'invalid', __('Configuração rejeitada por validação.', 'humanitastech-github-for-wordpress'));
             return get_option('htgp_settings', array());
         }
@@ -115,6 +132,15 @@ final class HTGP_Plugin {
         <?php if (!$this->configuration->ready()) : ?><div class="notice notice-error"><p><?php echo esc_html(implode(' ', $this->configuration->errors())); ?></p></div><?php endif; ?>
         <form action="options.php" method="post"><?php settings_fields('htgp_settings'); ?>
         <table class="form-table" role="presentation">
+        <tr><th><label for="htgp_api_base_url"><?php esc_html_e('Endpoint HTTPS da API', 'humanitastech-github-for-wordpress'); ?></label></th><td><input type="url" class="regular-text" id="htgp_api_base_url" name="htgp_settings[api_base_url]" value="<?php echo esc_attr($settings['api_base_url'] ?? ''); ?>" required></td></tr>
+        <tr><th><label for="htgp_api_version"><?php esc_html_e('Versão da API', 'humanitastech-github-for-wordpress'); ?></label></th><td><input class="regular-text" id="htgp_api_version" name="htgp_settings[api_version]" value="<?php echo esc_attr($settings['api_version'] ?? ''); ?>" pattern="\d{4}-\d{2}-\d{2}" required></td></tr>
+        <tr><th><label for="htgp_timeout_seconds"><?php esc_html_e('Timeout em segundos', 'humanitastech-github-for-wordpress'); ?></label></th><td><input type="number" id="htgp_timeout_seconds" name="htgp_settings[timeout_seconds]" value="<?php echo esc_attr($settings['timeout_seconds'] ?? ''); ?>" min="1" required></td></tr>
+        <tr><th><label for="htgp_response_size"><?php esc_html_e('Limite da resposta em bytes', 'humanitastech-github-for-wordpress'); ?></label></th><td><input type="number" id="htgp_response_size" name="htgp_settings[response_size]" value="<?php echo esc_attr($settings['response_size'] ?? ''); ?>" min="1" required></td></tr>
+        <tr><th><label for="htgp_cache_ttl_seconds"><?php esc_html_e('Cache em segundos', 'humanitastech-github-for-wordpress'); ?></label></th><td><input type="number" id="htgp_cache_ttl_seconds" name="htgp_settings[cache_ttl_seconds]" value="<?php echo esc_attr($settings['cache_ttl_seconds'] ?? ''); ?>" min="1" required></td></tr>
+        <tr><th><label for="htgp_api_page_size"><?php esc_html_e('Máximo de projetos por consulta', 'humanitastech-github-for-wordpress'); ?></label></th><td><input type="number" id="htgp_api_page_size" name="htgp_settings[api_page_size]" value="<?php echo esc_attr($settings['api_page_size'] ?? ''); ?>" min="1" required></td></tr>
+        <tr><th><label for="htgp_max_owner_length"><?php esc_html_e('Limite do identificador da conta', 'humanitastech-github-for-wordpress'); ?></label></th><td><input type="number" id="htgp_max_owner_length" name="htgp_settings[max_owner_length]" value="<?php echo esc_attr($settings['max_owner_length'] ?? ''); ?>" min="1" required></td></tr>
+        <tr><th><label for="htgp_max_include_length"><?php esc_html_e('Limite do filtro de inclusão', 'humanitastech-github-for-wordpress'); ?></label></th><td><input type="number" id="htgp_max_include_length" name="htgp_settings[max_include_length]" value="<?php echo esc_attr($settings['max_include_length'] ?? ''); ?>" min="1" required></td></tr>
+        <tr><th><label for="htgp_max_repo_length"><?php esc_html_e('Limite do nome de repositório', 'humanitastech-github-for-wordpress'); ?></label></th><td><input type="number" id="htgp_max_repo_length" name="htgp_settings[max_repo_length]" value="<?php echo esc_attr($settings['max_repo_length'] ?? ''); ?>" min="1" required></td></tr>
         <tr><th><label for="htgp_owner"><?php esc_html_e('Conta', 'humanitastech-github-for-wordpress'); ?></label></th><td><input id="htgp_owner" name="htgp_settings[owner]" value="<?php echo esc_attr($settings['owner'] ?? ''); ?>" required></td></tr>
         <tr><th><label for="htgp_limit"><?php esc_html_e('Quantidade', 'humanitastech-github-for-wordpress'); ?></label></th><td><input type="number" id="htgp_limit" name="htgp_settings[limit]" value="<?php echo esc_attr($settings['limit'] ?? ''); ?>" min="1" max="<?php echo esc_attr($this->configuration->get('api_page_size')); ?>" required></td></tr>
         <tr><th><label for="htgp_sort"><?php esc_html_e('Ordenação', 'humanitastech-github-for-wordpress'); ?></label></th><td><select id="htgp_sort" name="htgp_settings[sort]" required><option value=""></option><?php foreach (array('created','updated','pushed','full_name') as $value) : ?><option value="<?php echo esc_attr($value); ?>" <?php selected($settings['sort'] ?? '', $value); ?>><?php echo esc_html($value); ?></option><?php endforeach; ?></select></td></tr>
