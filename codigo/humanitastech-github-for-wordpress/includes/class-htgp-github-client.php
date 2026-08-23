@@ -32,7 +32,7 @@ final class HTGP_GitHub_Client {
         $headers = array(
             'Accept'               => 'application/vnd.github+json',
             'X-GitHub-Api-Version' => $this->configuration->get('api_version'),
-            'User-Agent'           => 'HumanitasTech-GitHub-Projects/' . HTGP_VERSION,
+            'User-Agent'           => $this->configuration->get('user_agent'),
         );
         $token = $this->configuration->get('github_token');
         if ($token !== '') {

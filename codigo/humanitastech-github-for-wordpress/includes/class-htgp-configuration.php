@@ -15,6 +15,7 @@ final class HTGP_Configuration {
         $this->values = array(
             'api_base_url'       => $this->environment('HTGP_GITHUB_API_BASE_URL', true, 'api_base_url'),
             'api_version'        => $this->environment('HTGP_GITHUB_API_VERSION', true, 'api_version'),
+            'user_agent'         => $this->environment('HTGP_HTTP_USER_AGENT', true, 'user_agent'),
             'timeout_seconds'    => $this->positive_integer('HTGP_HTTP_TIMEOUT_SECONDS', 'timeout_seconds'),
             'response_size'      => $this->positive_integer('HTGP_RESPONSE_SIZE_BYTES', 'response_size'),
             'cache_ttl_seconds'  => $this->positive_integer('HTGP_CACHE_TTL_SECONDS', 'cache_ttl_seconds'),
