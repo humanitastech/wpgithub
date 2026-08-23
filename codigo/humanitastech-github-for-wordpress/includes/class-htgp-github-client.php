@@ -13,7 +13,7 @@ final class HTGP_GitHub_Client {
 
     public function repositories($username, array $query) {
         if (!$this->configuration->ready()) {
-            return new WP_Error('htgp_configuration', __('Integração não configurada.', 'humanitastech-github-projects'));
+            return new WP_Error('htgp_configuration', __('Integração não configurada.', 'humanitastech-github-for-wordpress'));
         }
         $username = $this->validate_owner($username);
         if (is_wp_error($username)) {
@@ -27,7 +27,7 @@ final class HTGP_GitHub_Client {
         $endpoint = trailingslashit($this->configuration->get('api_base_url')) . 'users/' . rawurlencode($username) . '/repos';
         $url = add_query_arg($query, $endpoint);
         if (!wp_http_validate_url($url)) {
-            return new WP_Error('htgp_endpoint', __('Destino externo inválido.', 'humanitastech-github-projects'));
+            return new WP_Error('htgp_endpoint', __('Destino externo inválido.', 'humanitastech-github-for-wordpress'));
         }
         $headers = array(
             'Accept'               => 'application/vnd.github+json',
@@ -47,15 +47,15 @@ final class HTGP_GitHub_Client {
         ));
         if (is_wp_error($response)) {
             do_action('htgp_security_event', 'external_request_failed');
-            return new WP_Error('htgp_unavailable', __('Serviço externo indisponível.', 'humanitastech-github-projects'));
+            return new WP_Error('htgp_unavailable', __('Serviço externo indisponível.', 'humanitastech-github-for-wordpress'));
         }
         if (wp_remote_retrieve_response_code($response) !== 200) {
             do_action('htgp_security_event', 'external_response_rejected');
-            return new WP_Error('htgp_unavailable', __('Serviço externo indisponível.', 'humanitastech-github-projects'));
+            return new WP_Error('htgp_unavailable', __('Serviço externo indisponível.', 'humanitastech-github-for-wordpress'));
         }
         $body = json_decode(wp_remote_retrieve_body($response), true);
         if (!is_array($body)) {
-            return new WP_Error('htgp_invalid_response', __('Resposta externa inválida.', 'humanitastech-github-projects'));
+            return new WP_Error('htgp_invalid_response', __('Resposta externa inválida.', 'humanitastech-github-for-wordpress'));
         }
         $repositories = array_values(array_filter($body, function ($repository) {
             return is_array($repository) && empty($repository['private']) && isset($repository['name'], $repository['html_url']);
@@ -67,7 +67,7 @@ final class HTGP_GitHub_Client {
     private function validate_owner($owner) {
         $owner = is_string($owner) ? trim($owner) : '';
         if ($owner === '' || strlen($owner) > $this->configuration->get('max_owner_length') || !preg_match('/^[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?$/', $owner)) {
-            return new WP_Error('htgp_owner', __('Identificador de conta inválido.', 'humanitastech-github-projects'));
+            return new WP_Error('htgp_owner', __('Identificador de conta inválido.', 'humanitastech-github-for-wordpress'));
         }
         return $owner;
     }

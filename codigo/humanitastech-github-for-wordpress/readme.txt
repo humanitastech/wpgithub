@@ -1,4 +1,4 @@
-=== HumanitasTech GitHub Projects ===
+=== HumanitasTech GitHub for WordPress ===
 Contributors: humanitastech
 Tags: github, repositories, portfolio, projects, shortcode
 Requires at least: 6.5
@@ -7,7 +7,7 @@ Tested up to: 7.1
 Stable tag: 1.0.0
 License: GPLv2 or later
 
-Exibe repositórios públicos do GitHub em cartões responsivos com cache e curadoria opcional.
+GitHub integration for WordPress, com exibição responsiva, cache seguro e curadoria opcional de repositórios públicos.
 
 == Description ==
 

@@ -1,10 +1,10 @@
-# HumanitasTech GitHub Projects
+# HumanitasTech GitHub for WordPress
 
-Plugin WordPress da HumanitasTech para apresentar repositórios públicos do GitHub. A versão `1.0.0` é o MVP estável e seguro do projeto.
+GitHub integration for WordPress criada pela HumanitasTech para apresentar repositórios públicos. A versão `1.0.0` é o MVP estável e seguro do projeto.
 
 ## Estrutura
 
-- `codigo/humanitastech-github-projects/`: código instalável do plugin;
+- `codigo/humanitastech-github-for-wordpress/`: código instalável do plugin;
 - `documentacao/`: escopo, configuração segura, modelo de ameaças, matriz ENS e roadmap;
 - `dist/`: pacote instalável da versão vigente.
 
