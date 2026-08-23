@@ -29,6 +29,7 @@ final class HTGP_Plugin {
     }
 
     public function render_shortcode($attributes) {
+        wp_enqueue_style('htgp-project-cards', HTGP_URL . 'assets/css/project-cards.css', array(), HTGP_VERSION);
         $settings = $this->settings();
         if (is_wp_error($settings)) {
             return $this->notice($settings);
@@ -66,6 +67,10 @@ final class HTGP_Plugin {
         <section class="htgp-projects" aria-label="<?php esc_attr_e('Projetos públicos', 'humanitastech-github-for-wordpress'); ?>">
             <?php foreach ($repositories as $repository) : ?>
                 <article class="htgp-project">
+                    <div class="htgp-project__header">
+                        <span class="htgp-project__eyebrow"><?php esc_html_e('Repositório público', 'humanitastech-github-for-wordpress'); ?></span>
+                        <span class="htgp-project__mark" aria-hidden="true">↗</span>
+                    </div>
                     <h3 class="htgp-project__title"><a href="<?php echo esc_url($repository['html_url']); ?>" target="_blank" rel="noopener noreferrer external"><?php echo esc_html($repository['name']); ?></a></h3>
                     <?php if (!empty($repository['description'])) : ?><p class="htgp-project__description"><?php echo esc_html($repository['description']); ?></p><?php endif; ?>
                     <dl class="htgp-project__metadata">
