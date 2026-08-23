@@ -1,0 +1,24 @@
+# Segredos e configuração local
+.env
+.env.*
+!.env.example
+wp-config.php
+*.local.*
+
+# Editores e sistema operacional
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Dependências e resultados temporários
+vendor/
+node_modules/
+coverage/
+*.log
+*.tmp
+
+# Artefatos históricos locais
+dist/archive-source-0.1.0/
+dist/humanitastech-github-projects-0.1.0.zip
+dist/humanitastech-github-projects-0.2.0.zip
