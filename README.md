@@ -4,9 +4,11 @@ GitHub integration for WordPress criada pela HumanitasTech para apresentar repos
 
 ## Estrutura
 
-- `codigo/humanitastech-github-for-wordpress/`: código instalável do plugin;
+- `codigo/htgithubforwp/`: código instalável do plugin;
 - `documentacao/`: escopo, configuração segura, modelo de ameaças, matriz ENS e roadmap;
 - `dist/`: pacote instalável da versão vigente.
+
+O pacote oficial é gerado exclusivamente por `build-package.ps1`. O slug técnico é imutável: `htgithubforwp`.
 
 ## Segurança
 

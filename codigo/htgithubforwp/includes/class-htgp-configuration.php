@@ -50,7 +50,7 @@ final class HTGP_Configuration {
         }
         $value = is_scalar($value) ? trim((string) $value) : '';
         if ($required && $value === '') {
-            $this->errors[] = sprintf(__('Configuração obrigatória ausente: %s.', 'humanitastech-github-for-wordpress'), $name);
+            $this->errors[] = sprintf(__('Configuração obrigatória ausente: %s.', 'htgithubforwp'), $name);
         }
         return $value;
     }
@@ -58,7 +58,7 @@ final class HTGP_Configuration {
     private function positive_integer($name, $option_key) {
         $value = $this->environment($name, true, $option_key);
         if ($value !== '' && (!ctype_digit($value) || (int) $value < 1)) {
-            $this->errors[] = sprintf(__('Configuração numérica inválida: %s.', 'humanitastech-github-for-wordpress'), $name);
+            $this->errors[] = sprintf(__('Configuração numérica inválida: %s.', 'htgithubforwp'), $name);
             return null;
         }
         return $value === '' ? null : (int) $value;
@@ -71,7 +71,8 @@ final class HTGP_Configuration {
         }
         $parts = wp_parse_url($url);
         if (!is_array($parts) || ($parts['scheme'] ?? '') !== 'https' || empty($parts['host']) || isset($parts['user']) || isset($parts['pass']) || !wp_http_validate_url($url)) {
-            $this->errors[] = __('O endpoint externo deve ser uma URL HTTPS pública, sem credenciais incorporadas.', 'humanitastech-github-for-wordpress');
+            $this->errors[] = __('O endpoint externo deve ser uma URL HTTPS pública, sem credenciais incorporadas.', 'htgithubforwp');
         }
     }
 }
+
