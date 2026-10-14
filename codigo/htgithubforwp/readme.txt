@@ -3,8 +3,7 @@ Contributors: humanitastech
 Tags: github, repositories, portfolio, projects, shortcode
 Requires at least: 6.5
 Requires PHP: 7.4
-Tested up to: 7.1
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 
 GitHub integration for WordPress, com exibição responsiva, cache seguro e curadoria opcional de repositórios públicos.
@@ -22,6 +21,12 @@ O filtro opcional `include` recebe nomes de repositórios separados por vírgula
 Este plugin consulta exclusivamente o serviço externo HTTPS definido pelo ambiente de execução. A organização responsável pela implantação deve documentar o destino, os termos aplicáveis e a base jurídica correspondente.
 
 == Changelog ==
+
+= 1.0.1 =
+* Cache segregado por configuração, origem e contexto da credencial.
+* Recuo compartilhado em falhas, exclusão mútua e orçamento agregado de consultas.
+* Token vinculado à origem aprovada no ambiente; esquema público e origens de links validados.
+* Migração exige novos parâmetros de segurança de ambiente; consulte CONFIGURACAO_SEGURA.md.
 
 = 0.1.0 =
 * MVP: grade automática, curadoria, estatísticas, cache, shortcode e configurações.

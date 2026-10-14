@@ -114,6 +114,12 @@ final class HTGP_Plugin {
             add_settings_error('htgp_settings', 'forbidden', __('Configuração rejeitada.', 'htgithubforwp'));
             return get_option('htgp_settings', array());
         }
+        foreach ($input as $value) {
+            if (!is_scalar($value)) {
+                add_settings_error('htgp_settings', 'invalid_type', __('Configuração rejeitada.', 'htgithubforwp'));
+                return get_option('htgp_settings', array());
+            }
+        }
         $validated = array(
             'api_base_url'       => esc_url_raw($input['api_base_url'] ?? ''),
             'api_version'        => sanitize_text_field($input['api_version'] ?? ''),
@@ -141,11 +147,20 @@ final class HTGP_Plugin {
                 $invalid_integer = true;
             }
         }
+        foreach (array('timeout_seconds' => 'max_timeout_seconds', 'response_size' => 'max_response_size', 'api_page_size' => 'max_api_page_size') as $key => $maximum) {
+            if ($validated[$key] > $this->configuration->get($maximum)) {
+                $invalid_integer = true;
+            }
+        }
+        if ($this->configuration->get('github_token') !== '' && $this->configuration->origin($validated['api_base_url']) !== $this->configuration->get('token_origin')) {
+            $invalid_integer = true;
+        }
         $profile_owner = $this->owner_from_profile_url($validated['profile_url'], $validated['max_owner_length']);
         if (!is_array($endpoint) || ($endpoint['scheme'] ?? '') !== 'https' || empty($endpoint['host']) || isset($endpoint['user']) || isset($endpoint['pass']) || !wp_http_validate_url($validated['api_base_url']) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $validated['api_version']) || $validated['user_agent'] === '' || $invalid_integer || is_wp_error($profile_owner) || $validated['limit'] < 1 || $validated['limit'] > $validated['api_page_size'] || !in_array($validated['sort'], array('created', 'updated', 'pushed', 'full_name'), true) || !in_array($validated['direction'], array('asc', 'desc'), true) || !in_array($validated['type'], array('all', 'owner', 'member'), true)) {
             add_settings_error('htgp_settings', 'invalid', __('Configuração rejeitada por validação.', 'htgithubforwp'));
             return get_option('htgp_settings', array());
         }
+        do_action('htgp_security_event', 'configuration_validated');
         return $validated;
     }
 
@@ -169,7 +184,7 @@ final class HTGP_Plugin {
         <tr><th><label for="htgp_max_owner_length"><?php esc_html_e('Limite do identificador da conta', 'htgithubforwp'); ?></label></th><td><input type="number" id="htgp_max_owner_length" name="htgp_settings[max_owner_length]" value="<?php echo esc_attr($settings['max_owner_length'] ?? ''); ?>" min="1" required></td></tr>
         <tr><th><label for="htgp_max_include_length"><?php esc_html_e('Limite do filtro de inclusão', 'htgithubforwp'); ?></label></th><td><input type="number" id="htgp_max_include_length" name="htgp_settings[max_include_length]" value="<?php echo esc_attr($settings['max_include_length'] ?? ''); ?>" min="1" required></td></tr>
         <tr><th><label for="htgp_max_repo_length"><?php esc_html_e('Limite do nome de repositório', 'htgithubforwp'); ?></label></th><td><input type="number" id="htgp_max_repo_length" name="htgp_settings[max_repo_length]" value="<?php echo esc_attr($settings['max_repo_length'] ?? ''); ?>" min="1" required></td></tr>
-        <tr><th><label for="htgp_profile_url"><?php esc_html_e('URL do perfil no GitHub', 'htgithubforwp'); ?></label></th><td><input type="url" class="regular-text" id="htgp_profile_url" name="htgp_settings[profile_url]" value="<?php echo esc_attr($settings['profile_url'] ?? ''); ?>" aria-describedby="htgp_profile_url_description" required><p class="description" id="htgp_profile_url_description"><?php esc_html_e('Informe o perfil de qualquer usuário ou organização, por exemplo: https://github.com/nome-da-conta', 'htgithubforwp'); ?></p></td></tr>
+        <tr><th><label for="htgp_profile_url"><?php esc_html_e('URL do perfil no GitHub', 'htgithubforwp'); ?></label></th><td><input type="url" class="regular-text" id="htgp_profile_url" name="htgp_settings[profile_url]" value="<?php echo esc_attr($settings['profile_url'] ?? ''); ?>" aria-describedby="htgp_profile_url_description" required><p class="description" id="htgp_profile_url_description"><?php esc_html_e('Informe a URL do perfil em uma origem aprovada pelo ambiente.', 'htgithubforwp'); ?></p></td></tr>
         <tr><th><label for="htgp_limit"><?php esc_html_e('Quantidade', 'htgithubforwp'); ?></label></th><td><input type="number" id="htgp_limit" name="htgp_settings[limit]" value="<?php echo esc_attr($settings['limit'] ?? ''); ?>" min="1" max="<?php echo esc_attr($this->configuration->get('api_page_size')); ?>" required></td></tr>
         <tr><th><label for="htgp_sort"><?php esc_html_e('Ordenação', 'htgithubforwp'); ?></label></th><td><select id="htgp_sort" name="htgp_settings[sort]" required><option value=""></option><?php foreach (array('created','updated','pushed','full_name') as $value) : ?><option value="<?php echo esc_attr($value); ?>" <?php selected($settings['sort'] ?? '', $value); ?>><?php echo esc_html($value); ?></option><?php endforeach; ?></select></td></tr>
         <tr><th><label for="htgp_direction"><?php esc_html_e('Direção', 'htgithubforwp'); ?></label></th><td><select id="htgp_direction" name="htgp_settings[direction]" required><option value=""></option><?php foreach (array('asc','desc') as $value) : ?><option value="<?php echo esc_attr($value); ?>" <?php selected($settings['direction'] ?? '', $value); ?>><?php echo esc_html($value); ?></option><?php endforeach; ?></select></td></tr>
@@ -195,8 +210,7 @@ final class HTGP_Plugin {
         if (!is_array($parts)) {
             return new WP_Error('htgp_profile_url', __('URL de perfil inválida.', 'htgithubforwp'));
         }
-        $host = strtolower(rtrim($parts['host'] ?? '', '.'));
-        if (($parts['scheme'] ?? '') !== 'https' || !in_array($host, array('github.com', 'www.github.com'), true) || isset($parts['port']) || isset($parts['user']) || isset($parts['pass']) || isset($parts['query']) || isset($parts['fragment']) || !wp_http_validate_url($url)) {
+        if (($parts['scheme'] ?? '') !== 'https' || !$this->configuration->allowed_url($url, 'profile_origins') || isset($parts['user']) || isset($parts['pass']) || isset($parts['query']) || isset($parts['fragment'])) {
             return new WP_Error('htgp_profile_url', __('URL de perfil inválida.', 'htgithubforwp'));
         }
         $segments = array_values(array_filter(explode('/', trim($parts['path'] ?? '', '/')), 'strlen'));

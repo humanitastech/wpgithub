@@ -1,14 +1,15 @@
-# Matriz de alinhamento ENS
+# Matriz de acompanhamento — 1.0.1
 
-| Referência | Evidência no MVP 0.2.0 |
+ENS voluntário, conforme declaração do responsável. Sem categoria/Declaração de Aplicabilidade aprovada. Não é certificação. Critérios e fontes da avaliação de 14/10/2026 permanecem no relatório de auditoria. Reforços dependem da categoria e níveis validados, não do tamanho do plugin.
+
+| Referência | Evidência e limite |
 |---|---|
-| `mp.sw.1.1` Separação | fonte e documentação permanecem no ambiente de desenvolvimento; o pacote contém somente runtime |
-| R1 Mínimo privilégio | token opcional externo e recomendação de escopo somente leitura; administração limitada a `manage_options` |
-| R2 Desenvolvimento seguro | modelo de ameaças, validação positiva, escape contextual, inspeção de fonte e validação estática |
-| R3 Segurança desde o desenho | falha fechada, proteção de segredo, eventos de segurança, limites de requisição e ausência de execução dinâmica |
-| R4 Dados de teste | testes não requerem dados reais ou repositórios privados |
-| Proteção de aplicação web | nonce via Settings API, SSRF reduzido, XSS reduzido e ausência de SQL próprio |
-| Trazabilidade | `htgp_security_event` emite códigos de evento sem conteúdo sensível |
-| Conservação e integridade | pacote versionado e hash SHA-256 registrado na distribuição |
+| op.exp.2/op.exp.3 | Origem do token, limites de ambiente, cache por configuração; implantação não verificada |
+| mp.s.2 | Escape, validação de tipos e origens, regressões offline; testar WordPress real |
+| mp.sw.1 R1–R4 se MEDIA/ALTA | Menor privilégio, revisão e testes sintéticos; pastas não provam separação de ambientes |
+| op.pl.4/mp.s.4 conforme D | Orçamento, recuo e trava; capacidade/infraestrutura não medidas |
+| op.exp.8 conforme T | Eventos sanitizados; consumidor persistente e retenção não verificados |
+| org.1–org.4/op.pl.1 | Responsáveis, impactos, riscos, política e aplicabilidade ainda pendentes |
+| op.exp.4/op.exp.7 | Plano operacional de atualização/incidentes ainda pendente |
 
-Esta matriz é evidência de alinhamento técnico, não certificação de conformidade do sistema completo.
+HT-01 a HT-04 foram tratados no código e em regressões locais; consultar VALIDACAO_1.0.1.md para limitações. Complemento ISO permanece temático/provisório, sem cláusulas ou equivalência verificada.

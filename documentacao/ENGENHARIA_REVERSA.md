@@ -1,31 +1,7 @@
-# Engenharia reversa funcional
+# Decisões funcionais — 1.0.1
 
-## Princípio
+Implementação do plugin em PHP/WordPress com cliente de leitura, configuração e shortcode separados. O runtime não executa conteúdo de repositórios nem incorpora dependências Composer/npm.
 
-O projeto observa comportamentos públicos e documentação dos plugins de referência. O código do MVP é uma implementação original da HumanitasTech; nenhum trecho foi copiado.
+O portfólio inclui listagem, estatísticas, curadoria e metadados de última release. Isso requer uma listagem mais consultas por repositório em cache frio, limitadas pela política de execução. A apresentação inclui CSS do plugin; o tema pode personalizar classes.
 
-## Matriz de referência
-
-| Referência | Ideia aproveitada | Limitação evitada no MVP |
-|---|---|---|
-| Embed Repo for GitHub | Descoberta automática de todos os repositórios e grade responsiva | Dependências comerciais externas e excesso de controles puramente visuais |
-| Repo Showcase | Configuração central por usuário, shortcode simples e paginação como direção futura | Projeto desatualizado, token obrigatório e ausência de curadoria |
-| WP Plugin Info Card | Cartões ricos, estatísticas, cache e seleção de repositórios | Necessidade de cadastrar cada cartão e múltiplas chamadas por repositório |
-
-## Diferencial HumanitasTech
-
-- uma única chamada para descobrir até 100 repositórios;
-- cache no servidor com duração configurável;
-- modo automático ou lista curada;
-- identidade visual HumanitasTech;
-- token opcional e somente para elevar limites;
-- saída segura com escape de HTML e links externos protegidos;
-- arquitetura curta, auditável e independente de construtores de página.
-
-## Decisões do MVP
-
-- Shortcode antes do bloco Gutenberg para reduzir o tempo até validação.
-- REST API do GitHub consumida no servidor para não expor token no navegador.
-- Repositórios privados, forks e arquivados ficam ocultos por padrão.
-- Estatísticas limitadas ao retorno da listagem; releases e contribuidores ficam para fases posteriores, pois aumentam o número de chamadas.
-
+Os documentos anteriores referiam o MVP 0.2.0 sem releases e sem CSS. Esta descrição corresponde ao runtime atual. Endpoints, origens, identidade HTTP, credencial e limites operacionais são configuráveis; literais de protocolo, caminhos estruturais da API, identificadores WordPress, regex de esquema e metadados de versão são parte da implementação.

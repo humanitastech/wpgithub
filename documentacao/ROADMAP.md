@@ -1,5 +1,9 @@
 # Roadmap
 
+## Estado em 1.0.1
+
+Metadados de release, CSS visual e regressões offline já implementados. As etapas abaixo registram o planejamento original; não representam uma matriz de compatibilidade validada. Permanecem pendentes testes integrados em WordPress real, operação de logs, sincronização em background, restauração e eventual publicação no diretório oficial.
+
 ## 0.1 — MVP instalável
 
 - API pública por usuário/organização;
