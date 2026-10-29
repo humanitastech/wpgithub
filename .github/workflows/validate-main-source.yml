@@ -1,0 +1,22 @@
+name: Validate release source
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate-source:
+    name: Validate source branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require development branch
+        shell: bash
+        run: |
+          if [[ "${{ github.head_ref }}" != "dev" && "${{ github.head_ref }}" != "DEV" ]]; then
+            echo "Pull requests to main must originate from dev (or the existing DEV branch)."
+            exit 1
+          fi
