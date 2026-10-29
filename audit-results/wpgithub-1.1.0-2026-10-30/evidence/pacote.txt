@@ -1,0 +1,8 @@
+6 arquivos identicos byte a byte a fonte.
+SHA256 0ae6fbf4b957d69df63f6ee51828038acff0adde38928b6b2d428f3a34aa7e7b
+assets/css/project-cards.css
+includes/class-htgp-configuration.php
+includes/class-htgp-github-client.php
+includes/class-htgp-plugin.php
+htgithubforwp.php
+readme.txt

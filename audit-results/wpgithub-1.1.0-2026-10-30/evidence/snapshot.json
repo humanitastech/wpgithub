@@ -1,0 +1,12 @@
+{
+  "build-package.ps1": "ec375355f030e500eff8c6759709dd369ea5d0755ab51e148a3ec3ff28fcfe44",
+  "codigo/htgithubforwp/assets/css/project-cards.css": "61867e4dabd09086e178ad01e8c122c047012678967321a1c80c722dc2658301",
+  "codigo/htgithubforwp/htgithubforwp.php": "c7b946e939e658c875387ccb90800a038410a62ed2055e13f00ad862f810562a",
+  "codigo/htgithubforwp/includes/class-htgp-configuration.php": "6ee3f78a5a395b942a276369acd6ceb9f1efbca6d6faf092f3c125178dae5250",
+  "codigo/htgithubforwp/includes/class-htgp-github-client.php": "32549d231105fe2db1afde013e63eb120c7989bbb41ebc7650e50142c78b66a3",
+  "codigo/htgithubforwp/includes/class-htgp-plugin.php": "634375fb00431eb129543260ff8d18338cd58544b1abff9e53dfbc6aef1ad4e7",
+  "codigo/htgithubforwp/readme.txt": "18c0af9a4bd17d21a667caf19d158e76d09a70c208456a6a83f3473a03cdbc64",
+  "dist/htgithubforwp.zip": "0ae6fbf4b957d69df63f6ee51828038acff0adde38928b6b2d428f3a34aa7e7b",
+  "README.md": "581de58f20cf602bc75d7b5fcf9530ab0830ee4a1eb6e49c3595dea0e728c27b",
+  "tests/security.php": "d63a12846daede1c97acad85546e7657cd25216e167f4f4005359efea1aaedfd"
+}

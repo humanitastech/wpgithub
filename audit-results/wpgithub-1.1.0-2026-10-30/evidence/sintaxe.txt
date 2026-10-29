@@ -1,0 +1,7 @@
+No syntax errors detected in C:\Users\livia\Documents\HUMANITASTECH\audit-wpgithub\codigo\htgithubforwp\htgithubforwp.php
+
+No syntax errors detected in C:\Users\livia\Documents\HUMANITASTECH\audit-wpgithub\codigo\htgithubforwp\includes\class-htgp-configuration.php
+
+No syntax errors detected in C:\Users\livia\Documents\HUMANITASTECH\audit-wpgithub\codigo\htgithubforwp\includes\class-htgp-github-client.php
+
+No syntax errors detected in C:\Users\livia\Documents\HUMANITASTECH\audit-wpgithub\codigo\htgithubforwp\includes\class-htgp-plugin.php

@@ -128,5 +128,51 @@ reset_state(); $status = 404; $body = array($repo);
 $during_http = function () { $GLOBALS['status'] = count($GLOBALS['calls']) === 1 ? 200 : 404; };
 $html = $plugin->render_shortcode(array());
 check(strpos($html, '&lt;script&gt;') !== false && strpos($html, '<script>') === false, 'hostile repository description escaped in rendered HTML');
+// Topic validation and grouping use the same public listing/rendering path.
+reset_state(); $body[0]['topics'] = array('skill', 'codex');
+check(client()->repositories('demo', $query)[0]['topics'] === array('skill', 'codex'), 'repository topics retained');
+foreach (array('skill', array('<script>'), array(12), array('Skill'), array('bad topic'), array_fill(0, 21, 'skill')) as $invalid_topics) {
+    reset_state(); $body[0]['topics'] = $invalid_topics;
+    check(is_wp_error(client()->repositories('demo', $query)), 'invalid topic data rejected');
+}
+function render_repositories($repositories, $attributes = array()) {
+    reset_state();
+    $GLOBALS['body'] = $repositories;
+    $property = new ReflectionProperty(HTGP_Plugin::class, 'client');
+    $property->setAccessible(true);
+    $property->setValue($GLOBALS['plugin'], client());
+    $GLOBALS['during_http'] = function () { $GLOBALS['status'] = count($GLOBALS['calls']) === 1 ? 200 : 404; };
+    return $GLOBALS['plugin']->render_shortcode($attributes);
+}
+$first = $repo; $first['name'] = 'first';
+$second = $repo; $second['name'] = 'second';
+$html = render_repositories(array($first, $second));
+check(strpos($html, 'htgp-project-groups') === false && substr_count($html, '<article ') === 2, 'no topics preserves ungrouped grid');
+$first['topics'] = array('codex', 'php');
+$html = render_repositories(array($first, $second));
+check(strpos($html, 'htgp-project-groups') === false, 'unrelated topics do not create categories');
+$first['topics'] = array('skill');
+$html = render_repositories(array($first, $second));
+check(strpos($html, '>Skills</h2>') !== false && strpos($html, '>Geral</h2>') !== false && substr_count($html, '<article ') === 2, 'mixed classified and unclassified projects get Geral');
+$second['topics'] = array('plugin');
+$html = render_repositories(array($first, $second));
+check(strpos($html, '>Plugins</h2>') < strpos($html, '>Skills</h2>') && strpos($html, '>Geral</h2>') === false, 'classified projects grouped without empty Geral');
+$first['topics'] = array('skill', 'plugin');
+$html = render_repositories(array($first, $second));
+check(substr_count($html, '<article ') === 2 && strpos($html, '>Skills</h2>') === false, 'multiple type topics use fixed priority without duplicates');
+$first['topics'] = array('skill'); $first['private'] = true; unset($second['topics']);
+$html = render_repositories(array($first, $second));
+check(substr_count($html, '<article ') === 1 && strpos($html, 'htgp-project-groups') === false, 'private classification cannot affect public groups');
+$first['private'] = false;
+$html = render_repositories(array($first, $second), array('include' => 'second'));
+check(strpos($html, 'htgp-project-groups') === false, 'grouping happens after inclusion filter');
+foreach (array('theme' => 'Temas', 'app' => 'Aplicações', 'library' => 'Bibliotecas', 'docs' => 'Documentação') as $topic => $label) {
+    $first['topics'] = array($topic);
+    $html = render_repositories(array($first));
+    check(strpos($html, '>' . $label . '</h2>') !== false, 'supported category ' . $topic);
+}
+$html = render_repositories(array());
+check(strpos($html, 'htgp-project-groups') === false && strpos($html, '<article ') === false, 'empty listing has no groups');
+
 foreach (array_merge(array_keys($policy), array('HTGP_GITHUB_TOKEN', 'HTGP_GITHUB_TOKEN_ORIGIN')) as $key) { putenv($key); }
 echo "All offline security regressions passed.\n";

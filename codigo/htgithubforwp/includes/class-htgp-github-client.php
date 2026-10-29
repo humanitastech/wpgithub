@@ -37,6 +37,12 @@ final class HTGP_GitHub_Client {
                 }
                 if (isset($repository['owner']) && (!is_array($repository['owner']) || !$this->valid_owner($repository['owner']['login'] ?? null))) { return $this->error('htgp_invalid_response'); }
                 $clean = array_intersect_key($repository, array_flip(array('name', 'html_url', 'description', 'language', 'updated_at', 'fork', 'archived', 'stargazers_count', 'forks_count')));
+                $topics = $repository['topics'] ?? array();
+                if (!is_array($topics) || ($topics && array_keys($topics) !== range(0, count($topics) - 1)) || count($topics) > 20) { return $this->error('htgp_invalid_response'); }
+                foreach ($topics as $topic) {
+                    if (!is_string($topic) || !preg_match('/^[a-z0-9-]{1,50}$/D', $topic)) { return $this->error('htgp_invalid_response'); }
+                }
+                $clean['topics'] = array_values(array_unique($topics));
                 $clean['owner'] = array('login' => $repository['owner']['login'] ?? $username);
                 $clean['private'] = false;
                 $result[] = $clean;
@@ -57,7 +63,7 @@ final class HTGP_GitHub_Client {
     private function fetch($url, $validate, $allow_not_found = false) {
         if (!$this->configuration->ready() || !wp_http_validate_url($url) || $this->configuration->origin($url) !== $this->configuration->origin($this->configuration->get('api_base_url'))) { return $this->error('htgp_configuration'); }
         $scope = $this->configuration->fingerprint();
-        $key = 'htgp_data_' . hash('sha256', $scope . $url);
+        $key = 'htgp_data_' . hash('sha256', 'topics-v1|' . $scope . $url);
         $cached = get_transient($key);
         if (is_array($cached) && array_key_exists('data', $cached)) { return $cached['data']; }
         $backoff_key = 'htgp_backoff_' . $scope;
