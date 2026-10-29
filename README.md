@@ -1,6 +1,6 @@
 # HumanitasTech GitHub for WordPress
 
-GitHub integration for WordPress criada pela HumanitasTech para apresentar repositórios públicos. A versão `1.0.1` corrige o isolamento de cache, limita consultas em falhas e vincula credenciais à origem autorizada.
+GitHub integration for WordPress criada pela HumanitasTech para apresentar repositórios públicos. A versão `1.1.0` agrupa projetos por tópicos e preserva as proteções de cache, limites de consulta e vínculo de credenciais à origem autorizada.
 
 ## Estrutura
 
@@ -21,3 +21,11 @@ O alinhamento documentado ao ENS não equivale à certificação do sistema comp
 ## Licença
 
 GPL-2.0-or-later.
+
+## Agrupamento por tópicos (1.1.0)
+
+O shortcode existente `[ht_github_projects]` agrupa automaticamente os projetos públicos exibidos pelos tópicos `plugin`, `skill`, `theme`, `app`, `library` e `docs`. Os títulos são Plugins, Skills, Temas, Aplicações, Bibliotecas e Documentação, nessa ordem. A ordenação configurada dos projetos é mantida dentro de cada grupo.
+
+Se nenhum projeto exibido possui uma dessas classificações, a grade permanece como antes, sem títulos de grupos. Se há projetos classificados, os demais aparecem em Geral, ao final. Tópicos de assuntos (como `php`, `codex` e `wordpress`) e `ht-showcase` não definem grupos nem restringem a exibição. A classificação considera somente os projetos que passam pelos filtros existentes e pelo limite configurado.
+
+Use um tópico de classificação por repositório. Se houver mais de um, prevalece o primeiro na ordem acima, sem duplicar o projeto. Não há mudança de visibilidade dos repositórios. O cache de listagens anterior é separado do novo formato para buscar os tópicos na atualização.

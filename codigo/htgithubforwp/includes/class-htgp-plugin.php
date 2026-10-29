@@ -62,10 +62,18 @@ final class HTGP_Plugin {
             }
             return !$include || in_array($repository['name'], $include, true);
         }));
+        $groups = $this->group_repositories($repositories);
+        $grouped = array_keys($groups) !== array('');
         ob_start();
         ?>
-        <section class="htgp-projects" aria-label="<?php esc_attr_e('Projetos públicos', 'htgithubforwp'); ?>">
-            <?php foreach ($repositories as $repository) : ?>
+        <section class="<?php echo $grouped ? 'htgp-project-groups' : 'htgp-projects'; ?>" aria-label="<?php esc_attr_e('Projetos públicos', 'htgithubforwp'); ?>">
+            <?php foreach ($groups as $label => $group_repositories) : ?>
+                <?php if ($grouped) : ?>
+                    <section class="htgp-project-group" aria-label="<?php echo esc_attr($label); ?>">
+                        <h2 class="htgp-project-group__title"><?php echo esc_html($label); ?></h2>
+                        <div class="htgp-projects">
+                <?php endif; ?>
+            <?php foreach ($group_repositories as $repository) : ?>
                 <?php
                 $repository_owner = sanitize_text_field($repository['owner']['login'] ?? $owner);
                 $latest_release = $this->client->latest_release($repository_owner, $repository['name']);
@@ -96,9 +104,46 @@ final class HTGP_Plugin {
                     </dl>
                 </article>
             <?php endforeach; ?>
+                <?php if ($grouped) : ?></div></section><?php endif; ?>
+            <?php endforeach; ?>
         </section>
         <?php
         return ob_get_clean();
+    }
+
+    private function group_repositories(array $repositories) {
+        // Topic order in GitHub does not determine classification priority.
+        $labels = array(
+            'plugin' => __('Plugins', 'htgithubforwp'),
+            'skill' => __('Skills', 'htgithubforwp'),
+            'theme' => __('Temas', 'htgithubforwp'),
+            'app' => __('Aplicações', 'htgithubforwp'),
+            'library' => __('Bibliotecas', 'htgithubforwp'),
+            'docs' => __('Documentação', 'htgithubforwp'),
+        );
+        $buckets = array();
+        $general = array();
+        foreach ($repositories as $repository) {
+            $category = null;
+            foreach ($labels as $topic => $label) {
+                if (in_array($topic, $repository['topics'] ?? array(), true)) {
+                    $category = $topic;
+                    break;
+                }
+            }
+            if ($category === null) {
+                $general[] = $repository;
+            } else {
+                $buckets[$category][] = $repository;
+            }
+        }
+        if (!$buckets) { return array('' => $repositories); }
+        $groups = array();
+        foreach ($labels as $topic => $label) {
+            if (isset($buckets[$topic])) { $groups[$label] = $buckets[$topic]; }
+        }
+        if ($general) { $groups[__('Geral', 'htgithubforwp')] = $general; }
+        return $groups;
     }
 
     public function admin_menu() {

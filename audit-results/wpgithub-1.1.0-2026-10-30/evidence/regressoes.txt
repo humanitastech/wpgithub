@@ -1,0 +1,59 @@
+PASS: legitimate public repository
+PASS: authorized origin receives synthetic token
+PASS: success cache reused
+PASS: lock released after success
+PASS: token origin mismatch fails closed
+PASS: denied origin performs no HTTP
+PASS: endpoint change misses cache; anonymous request has no token
+PASS: credential rotation segregates cache
+PASS: missing/null public flag rejected
+PASS: private repository rejected
+PASS: unapproved link rejected
+PASS: malformed types rejected without fatal
+PASS: malformed JSON rejected
+PASS: global cooldown across workers and methods for 429
+PASS: Retry-After honored
+PASS: global cooldown across workers and methods for 503
+PASS: Retry-After honored
+PASS: timeout backoff and lock cleanup
+PASS: release 404 negative cache
+PASS: legitimate release
+PASS: interleaved worker cannot issue duplicate HTTP
+PASS: aggregate request count enforced
+PASS: configured time budget caps transport
+PASS: expired lock recovered
+PASS: old worker cannot delete successor lock
+PASS: missing required policy fails closed
+PASS: oversized response rejected
+PASS: Retry-After capped by configured policy
+PASS: Retry-After HTTP date supported
+PASS: expired cooldown permits recovery
+PASS: elapsed aggregate time budget denies HTTP
+PASS: malformed release rejected
+PASS: pagination policy enforced
+PASS: unsafe administrative timeout rejected by environment cap
+PASS: unprivileged configuration denied
+PASS: nested administrative input rejected without fatal
+PASS: admin cannot exceed environment ceiling
+PASS: admin cannot redirect environment token
+PASS: hostile repository description escaped in rendered HTML
+PASS: repository topics retained
+PASS: invalid topic data rejected
+PASS: invalid topic data rejected
+PASS: invalid topic data rejected
+PASS: invalid topic data rejected
+PASS: invalid topic data rejected
+PASS: invalid topic data rejected
+PASS: no topics preserves ungrouped grid
+PASS: unrelated topics do not create categories
+PASS: mixed classified and unclassified projects get Geral
+PASS: classified projects grouped without empty Geral
+PASS: multiple type topics use fixed priority without duplicates
+PASS: private classification cannot affect public groups
+PASS: grouping happens after inclusion filter
+PASS: supported category theme
+PASS: supported category app
+PASS: supported category library
+PASS: supported category docs
+PASS: empty listing has no groups
+All offline security regressions passed.

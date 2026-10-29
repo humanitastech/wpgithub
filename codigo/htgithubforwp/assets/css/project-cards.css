@@ -116,3 +116,17 @@
         transition: none;
     }
 }
+
+.htgp-project-groups {
+    display: grid;
+    gap: 2.5rem;
+    width: 100%;
+}
+
+.htgp-project-group { min-width: 0; }
+
+.htgp-project-group__title {
+    margin: 0 0 1.25rem;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    line-height: 1.2;
+}
